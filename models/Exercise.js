@@ -1,7 +1,7 @@
 const { model, Schema } = require('mongoose');
 
 const exerciseSchema = new Schema({
-  name: String,
+  title: String,
   difficulty: Number,
   placeholderCode: String,
   hints: [String],
@@ -14,6 +14,10 @@ const exerciseSchema = new Schema({
   created_by: {
     type: Schema.Types.ObjectId,
     ref: 'users'
+  },
+  company: {
+    type: Schema.Types.ObjectId,
+    ref: 'companies'
   },
   tests: String
 
