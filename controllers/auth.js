@@ -6,11 +6,12 @@ const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-function generateToken (user) {
+function generateToken (user, company) {
   return jwt.sign(
     {
       id: user.id,
-      name: user.name
+      name: user.name,
+      companyId: company.id
     },
     process.env.SECRET_KEY,
     { expiresIn: '24h' }
@@ -57,7 +58,7 @@ exports.register = async ctx => {
     { new: true }
   );
   // GENERATE TOKEN
-  const token = generateToken(createdUser);
+  const token = generateToken(createdUser, updatedCompany);
   // SEND EMAIL
   const msg = {
     to: createdUser.email,
@@ -98,7 +99,7 @@ exports.login = async ctx => {
     ctx.throw(422, 'Wrong credentials');
   }
   // GENERATE TOKEN
-  const token = generateToken(user);
+  const token = generateToken(user, company);
   // COMPOSE RESPONSE
   ctx.body = {
     name: user.name,
