@@ -20,19 +20,19 @@ function generateToken (user) {
 exports.register = async ctx => {
   // CHECK INPUT
   const { companyName, name, email, password } = ctx.request.body;
-  if (!companyName) ctx.throw(422, 'Company name required.');
-  if (!name) ctx.throw(422, 'Name required.');
-  if (!email) ctx.throw(422, 'Email required.');
-  if (!password) ctx.throw(422, 'Password required.');
+  if (!companyName) ctx.throw(422, JSON.stringify({ error:'Company name required.'}));
+  if (!name) ctx.throw(422, JSON.stringify({ error:'Name required.'}));
+  if (!email) ctx.throw(422, JSON.stringify({ error:'Email required.'}));
+  if (!password) ctx.throw(422, JSON.stringify({ error:'Password required.'}));
   // CHECK IF USER EXISTS
   const user = await User.findOne({ name });
   if (user) {
-    ctx.throw(422, 'This name is taken.');
+    ctx.throw(422, JSON.stringify({ error: 'This name is taken.'}));
   }
   // CHECK IF COMPANY EXISTS
   const company = await Company.findOne({ name: companyName });
   if (company) {
-    ctx.throw(422, 'There\'s already a company with this name');
+    ctx.throw(422, JSON.stringify({ error:'There\'s already a company with this name'}));
   }
   // HASH THE PASSWORD
   hashedPassword = await bcrypt.hash(password);
@@ -66,7 +66,7 @@ exports.register = async ctx => {
     text: 'and easy to do anywhere, even with Node.js',
     html: '<strong>and easy to do anywhere, even with Node.js</strong>'
   };
-  sgMail.send(msg);
+  // sgMail.send(msg);   **********FOR DEVELOPING SendGrid EMAILS ARE COMMENTED OUT.********************
   // COMPOSE RESPONSE
   ctx.body = {
     name: createdUser.name,
@@ -80,22 +80,22 @@ exports.register = async ctx => {
 exports.login = async ctx => {
   // CHECK INPUT
   const { email, password } = ctx.request.body;
-  if (!email) ctx.throw(422, 'Email required.');
-  if (!password) ctx.throw(422, 'Password required.');
+  if (!email) ctx.throw(422, JSON.stringify({ error:'Email required.'}));
+  if (!password) ctx.throw(422, JSON.stringify({ error:'Password required.'}));
   // CHECK IF USER EXISTS
   const user = await User.findOne({ email });
   if (!user) {
-    ctx.throw(422, 'This user doesn\'t exist');
+    ctx.throw(422, JSON.stringify({ error:'This user doesn\'t exist'}));
   }
   // CHECK IF ITS COMPANY EXIST
   const company = await Company.findOne({ _id: user.company });
   if (!company) {
-    ctx.throw(422, 'This user is not connected to any company');
+    ctx.throw(422, JSON.stringify({ error:'This user is not connected to any company'}));
   }
   // CHECK IF THE PASSWORD IS CORRECT
   const match = await bcrypt.compare(password, user.password);
   if (!match) {
-    ctx.throw(422, 'Wrong credentials');
+    ctx.throw(422, JSON.stringify({ error:'Wrong credentials'}));
   }
   // GENERATE TOKEN
   const token = generateToken(user);
