@@ -1,12 +1,15 @@
 const Exercise = require('./../models/Exercise');
 const Company = require('./../models/Company');
+const User = require('./../models/User');
 
 exports.getExercises = async ctx => {
   const { companyId } = ctx.request.jwtPayload;
   const result = await Company.findOne({ _id: companyId }).populate({
     path: 'exercises',
-    model: Exercise
-  });
+    model: Exercise,
+    populate: ({ path: 'created_by', model: User, select: ['name', 'email']})
+  })
+  console.log(result)
   ctx.body = result.exercises;
 };
 
