@@ -1,7 +1,7 @@
 const User = require('./../models/User');
 const Company = require('./../models/Company');
 
-const bcrypt = require('../utils/bcrypt');
+const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const sgMail = require('@sendgrid/mail');
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
@@ -36,10 +36,11 @@ exports.register = async ctx => {
     ctx.throw(422, JSON.stringify({ error:'There\'s already a company with this name'}));
   }
   // HASH THE PASSWORD
-  hashedPassword = await bcrypt.hash(password);
+  hashedPassword = await bcrypt.hash(password, 12);
   // CREATE THE COMPANY
   const createdCompany = await Company.create({
     name: companyName,
+    email: email,
     verified: false,
     created_at: new Date().toISOString()
   });
@@ -48,7 +49,7 @@ exports.register = async ctx => {
     name,
     email,
     password: hashedPassword,
-    createdAt: new Date().toISOString(),
+    created_at: new Date().toISOString(),
     company: createdCompany.id
   });
   // LINK THE COMPANY TO THE USER
@@ -67,7 +68,7 @@ exports.register = async ctx => {
     text: 'and easy to do anywhere, even with Node.js',
     html: '<strong>and easy to do anywhere, even with Node.js</strong>'
   };
-  // sgMail.send(msg);   **********FOR DEVELOPING SendGrid EMAILS ARE COMMENTED OUT.********************
+  // await sgMail.send(msg);  
   // COMPOSE RESPONSE
   ctx.body = {
     name: createdUser.name,
