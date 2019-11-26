@@ -22,6 +22,7 @@ exports.createExercise = async ctx => {
     tests,
     instructions,
     hints,
+    duration,
     solution
   } = ctx.request.body;
   if (!title) ctx.throw(422, JSON.stringify({ error: 'Title is required' }));
@@ -29,6 +30,8 @@ exports.createExercise = async ctx => {
     ctx.throw(422, JSON.stringify({ error: 'Instructions are required' }));
   if (!difficulty)
     ctx.throw(422, JSON.stringify({ error: 'Difficulty is required' }));
+  if (!duration)
+    ctx.throw(422, JSON.stringify({ error: 'Duration is required' }));
   if (!placeholderCode)
     ctx.throw(422, JSON.stringify({ error: 'Placeholder code is required' }));
   if (!tests) ctx.throw(422, JSON.stringify({ error: 'Tests are required' }));
@@ -36,6 +39,7 @@ exports.createExercise = async ctx => {
   const createdExercises = await Exercise.create({
     title,
     instructions,
+    duration,
     difficulty,
     placeholderCode,
     tests,
