@@ -47,7 +47,7 @@ exports.startApplication = async ctx => {
   if (Date.now() - app.created_at > app.token_duration)
     ctx.throw(422, JSON.stringify({ error: 'Token link expired' }));
   // CHECK IT HAS NEVER BEEN ACTIVATED
-  if (app.status == !'issued')
+  if (app.status !== 'issued')
     ctx.throw(422, JSON.stringify({ error: 'This application is expired' }));
   // UPDATE THE APPLICATION
   await Application.findOneAndUpdate(
