@@ -7,17 +7,26 @@ exports.getExercises = async ctx => {
   const result = await Company.findOne({ _id: companyId }).populate({
     path: 'exercises',
     model: Exercise,
-    populate: ({ path: 'created_by', model: User, select: ['name', 'email']})
-  })
-  console.log(result)
+    populate: { path: 'created_by', model: User, select: ['name', 'email'] }
+  });
   ctx.body = result.exercises;
 };
 
 exports.createExercise = async ctx => {
   const { id, companyId } = ctx.request.jwtPayload;
   // CHECK INPUT
-  const { title, difficulty, placeholderCode, tests } = ctx.request.body;
+  const {
+    title,
+    difficulty,
+    placeholderCode,
+    tests,
+    instructions,
+    hints,
+    solution
+  } = ctx.request.body;
   if (!title) ctx.throw(422, JSON.stringify({ error: 'Title is required' }));
+  if (!instructions)
+    ctx.throw(422, JSON.stringify({ error: 'Instructions are required' }));
   if (!difficulty)
     ctx.throw(422, JSON.stringify({ error: 'Difficulty is required' }));
   if (!placeholderCode)
@@ -26,10 +35,13 @@ exports.createExercise = async ctx => {
   // CREATE THE EXERCISES
   const createdExercises = await Exercise.create({
     title,
+    instructions,
     difficulty,
     placeholderCode,
     tests,
-    createdAt: new Date().toISOString(),
+    hints: hints || [],
+    solution: solution || '',
+    created_at: new Date().toISOString(),
     created_by: id,
     company: companyId
   });
@@ -48,10 +60,8 @@ exports.deleteExercise = async ctx => {
   const exerciseId = ctx.params.id;
   const exercise = await Exercise.findOne({ _id: exerciseId });
   if (!exercise) {
-    ctx.throw(422, JSON.stringify({ error: ' Exercise doesnt exist'}));
+    ctx.throw(422, JSON.stringify({ error: ' Exercise doesnt exist' }));
   }
-  console.log(exercise.company);
-  console.log(companyId);
   if (companyId == exercise.company) {
     // REMOVE EXERCISE FROM COMPANY
     const companyExercises = await Company.findOne({ _id: companyId }).populate(
@@ -60,11 +70,9 @@ exports.deleteExercise = async ctx => {
         model: Exercise
       }
     );
-    console.log('company exercises', companyExercises);
     const filteredExercises = companyExercises.exercises.filter(elem => {
       return elem._id !== exerciseId;
     });
-    console.log('filtered exercises', filteredExercises);
     await Company.findOneAndUpdate(
       { _id: companyId },
       { $set: { exercises: filteredExercises } },

@@ -5,6 +5,7 @@ const authenticated = require('./../middleware/authenticated');
 const auth = require('./../controllers/auth');
 const dashboard = require('./../controllers/dashboard');
 const exercises = require('./../controllers/exercises');
+const applications = require('./../controllers/applications');
 
 // AUTH ROUTES
 router.post('/register', auth.register);
@@ -21,5 +22,10 @@ router.get('/getExercises', authenticated, exercises.getExercises);
 router.delete('/deleteExercise/:id', authenticated, exercises.deleteExercise);
 
 // APPLICATIONS ROUTES
+router.get('/getApplications', authenticated, applications.getApplications);
+router.post('/createApplication', authenticated, applications.createApplication);
+router.get('/getApplication/:id', applications.getApplication);
+router.post('/startApplication/:id', applications.startApplication);
+
 
 module.exports = router;

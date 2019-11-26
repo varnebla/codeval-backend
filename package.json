@@ -13,7 +13,7 @@
     "@koa/cors": "^2.2.3",
     "@sendgrid/mail": "^6.4.0",
     "babel-eslint": "^10.0.3",
-    "bcrypt-nodejs": "0.0.3",
+    "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
     "i": "^0.3.6",
     "jsonwebtoken": "^8.5.1",
