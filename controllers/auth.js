@@ -71,7 +71,7 @@ exports.register = async ctx => {
     from: 'thesis@thesis-codeworks.com',
     subject: 'Please confirm your email',
     text: `Hi, ${createdUser.name}`,
-    html: `<p>Hola!</p><p>Please confirm your email:</p><a href='http://localhost:3000/landing/confirm/${createdUser.id}'>link text</a> <p></p> <p></p>`
+    html: `<p>Hola!</p><p>Please confirm your email:</p><a href='http://localhost:3000/confirm/${createdUser.id}'>link text</a> <p></p> <p></p>`
   };
   await sgMail.send(msg);
   // COMPOSE RESPONSE
