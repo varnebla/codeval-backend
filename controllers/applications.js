@@ -103,7 +103,7 @@ exports.createApplication = async ctx => {
     from: 'thesis@codeworks.com',
     subject: 'Your link to the coding interview',
     text: 'Ciao',
-    html: `<p>Bonjour!</p><p>Voici votre mot de passe provisoire:</p><a href='http://localhost:3000/${createdApplication._id}'>link text</a> <p>Cordialement,</p> <p>Infogène Lyon</p>`
+    html: `<p>Hola!</p><p>:</p><a href='http://localhost:3000/assessment/briefing/${createdApplication._id}'>link text</a> <p></p> <p></p>`
   };
   await sgMail.send(msg);
   // FINISH
