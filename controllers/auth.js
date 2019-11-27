@@ -139,6 +139,13 @@ exports.confirmEmail = async ctx => {
   const company = await Company.findOne({ admin: userId });
   if (!company)
     ctx.throw(422, JSON.stringify({ error: 'This company doesnt exist' }));
+    // CHECK IF THE USER IS VERIFIED
+  if (user.verified) {
+    ctx.throw(
+      422,
+      JSON.stringify({ error: 'This user is already verified' })
+    );
+  }
   // UPDATE USER
   user.verified = true;
   await user.save();
