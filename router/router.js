@@ -10,6 +10,7 @@ const applications = require('./../controllers/applications');
 // AUTH ROUTES
 router.post('/register', auth.register);
 router.post('/login', auth.login);
+router.post('/confirmEmail', auth.confirmEmail);
 
 // DASHOBARD ROUTES
 router.get('/banana', authenticated, dashboard.summary);

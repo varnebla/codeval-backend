@@ -1,0 +1,30 @@
+
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjVkZGQwNmFkNzFkZDMzMDg3YzFmMGJjOSIsIm5hbWUiOiJUaW0gQ29vMmsiLCJjb21wYW55SWQiOiI1ZGRkMDZhZDcxZGQzMzA4N2MxZjBiYzgiLCJpYXQiOjE1NzQ4NDUyNDcsImV4cCI6MTU3NDkzMTY0N30.ARMmd634Wbm1gHmOa9nkzXgDrBAyDRywjQu59R9SMlQ
+
+###
+
+POST http://localhost:5000/register
+content-type: application/json
+
+{
+"companyName": "Adfgdppfdgfdgle2",
+"name": "Tim Cogdfo2k",
+"email": "gio.grand@me.com",
+"password": "giogio"
+}
+
+###
+
+POST http://localhost:5000/login
+content-type: application/json
+
+{
+"email": "gio.grand@me.com",
+"password": "giogio"
+}
+
+###
+
+GET http://localhost:5000/getApplications
+
+Authorization: Bearer {{token}}

@@ -8,11 +8,11 @@ const bodyParser = require('koa-bodyparser');
 const errorHandler = require('./middleware/errorHandler');
 const router = require('./router/router');
 
+app.use(errorHandler);
 app.use(cors());
 app.use(bodyParser());
 app.use(router.routes());
 app.use(router.allowedMethods());
-app.use(errorHandler);
 
 mongoose
   .connect(process.env.MONGODB, {
