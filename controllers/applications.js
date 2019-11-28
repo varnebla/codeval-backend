@@ -58,6 +58,8 @@ exports.startApplication = async ctx => {
   ctx.body = 'successfully started';
 };
 
+
+
 // CREATE APPLICATION FROM COMPANY DASHBOARD
 exports.createApplication = async ctx => {
   const { id, companyId } = ctx.request.jwtPayload;
@@ -82,7 +84,9 @@ exports.createApplication = async ctx => {
       })
     );
   }
-  // CREATE THE EXERCISES
+  // GET THE SENDER
+  const sender = await User.findOne({ _id: id });
+  // CREATE THE APPLICATION
   const createdApplication = await Application.create({
     exercise,
     applicantEmail,
@@ -92,18 +96,22 @@ exports.createApplication = async ctx => {
     token_duration
   });
   // LINK THE APPLICATION TO THE COMPANY
-  await Company.findOneAndUpdate(
+  const updatedCompany = await Company.findOneAndUpdate(
     { _id: companyId },
     { $push: { applications: createdApplication.id } },
     { new: true }
   );
   // SEND EMAIL TO APPLICANT
+  const link = `http://localhost:3000/assessment/briefing/${createdApplication._id}`;
   const msg = {
     to: applicantEmail,
     from: 'thesis@codeworks.com',
-    subject: 'Your link to the coding interview',
-    text: 'Ciao',
-    html: `<p>Hola!</p><p>:</p><a href='http://localhost:3000/assessment/briefing/${createdApplication._id}'>link text</a> <p></p> <p></p>`
+    templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
+    dynamic_template_data: {
+      appLink: link,
+      senderName: sender.name,
+      companyName: updatedCompany.name
+    }, 
   };
   await sgMail.send(msg);
   // FINISH
