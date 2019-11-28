@@ -64,24 +64,20 @@ exports.register = async ctx => {
     { new: true }
   );
   // GENERATE TOKEN
-  const token = generateToken(createdUser, updatedCompany);
+  const link = `http://localhost:3000/landing/confirm/${createdUser.id}`;
   // SEND EMAIL
   const msg = {
     to: createdUser.email,
     from: 'thesis@thesis-codeworks.com',
-    subject: 'Please confirm your email',
-    text: `Hi, ${createdUser.name}`,
-    html: `<p>Hola!</p><p>Please confirm your email:</p><a href='http://localhost:3000/confirm/${createdUser.id}'>link text</a> <p></p> <p></p>`
+    templateId: 'd-805812b3ecb841e78f44d7f78fe68536',
+    dynamic_template_data: {
+      appLink: link,
+      senderName: createdUser.name
+    },
   };
   await sgMail.send(msg);
   // COMPOSE RESPONSE
-  ctx.body = {
-    name: createdUser.name,
-    companyName: updatedCompany.name,
-    companyId: updatedCompany._id,
-    id: createdUser._id,
-    token
-  };
+  ctx.body = 'Succesfully registered';
 };
 
 exports.login = async ctx => {
