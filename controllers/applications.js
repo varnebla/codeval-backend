@@ -42,9 +42,11 @@ exports.startApplication = async ctx => {
   // CHECK INPUT
   if (!applicantName)
     ctx.throw(422, JSON.stringify({ error: 'Applicant name is required' }));
+  // SET STARTING TIME
+  const startingTime = Date.now();
   // CHECK IT'S STILL VALID (EXPIRATION TIME)
   const app = await Application.findOne({ _id: ctx.params.id });
-  if (Date.now() - app.created_at > app.token_duration)
+  if (Date.now() - startingTime > app.token_duration)
     ctx.throw(422, JSON.stringify({ error: 'Token link expired' }));
   // CHECK IT HAS NEVER BEEN ACTIVATED
   if (app.status !== 'issued')
@@ -52,7 +54,7 @@ exports.startApplication = async ctx => {
   // UPDATE THE APPLICATION
   await Application.findOneAndUpdate(
     { _id: ctx.params.id },
-    { $set: { applicantName: applicantName, status: 'activated' } },
+    { $set: { applicantName: applicantName, status: 'activated', startingTime: startingTime } },
     { new: true }
   );
   ctx.body = 'successfully started';
