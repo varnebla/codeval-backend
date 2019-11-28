@@ -77,7 +77,7 @@ exports.register = async ctx => {
   };
   await sgMail.send(msg);
   // COMPOSE RESPONSE
-  ctx.body = 'Succesfully registered';
+  ctx.body = { msg: 'Succesfully registered' };
 };
 
 exports.login = async ctx => {
@@ -148,5 +148,5 @@ exports.confirmEmail = async ctx => {
   // UPDATE COMPANY
   company.verified = true;
   await company.save();
-  ctx.body = 'Email successfully confirmed';
+  ctx.body = { msg: 'Email succesfully confirmed' };
 };
