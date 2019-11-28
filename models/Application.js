@@ -35,7 +35,16 @@ const applicationSchema = new Schema({
   applicantName: String,
   startingTime: Date,
   // UPDATED ON SUBMIT
-  completed_at: Date,
+  submittedCode: {
+    type: String,
+  },
+  passed: {
+    type: Boolean,
+    default: false
+  },
+  completionTime: {
+    type: Number
+  },
   report: {
     type: Schema.Types.ObjectId,
     ref: 'reports'

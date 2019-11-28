@@ -58,7 +58,37 @@ exports.startApplication = async ctx => {
   ctx.body = 'successfully started';
 };
 
-
+// SUBMIT APPLICATION
+exports.submitApplication = async ctx => {
+  const { completionTime, submittedCode } = ctx.request.body;
+  // CHECK INPUT
+  if (!time)
+    ctx.throw(422, JSON.stringify({ error: 'Applicant name is required' }));
+  if (!submittedCode)
+    ctx.throw(422, JSON.stringify({ error: 'Applicant name is required' }));
+  // UPDATE THE APPLICATION
+  const updatedApplication = await Application.findOneAndUpdate(
+    { _id: ctx.params.id },
+    { $set: { completionTime, status: 'completed', submittedCode } },
+    { new: true }
+  );
+  // FIND THE CREATOR OF THE APPLICATION
+  const interviewer = await User.findOne({ _id: updatedApplication.created_by });
+  // SEND EMAIL TO APPLICANT
+  const link = 'http://localhost:3000/dashboard';
+  const msg = {
+    to: interviewer.email,
+    from: 'thesis@codeworks.com',
+    templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
+    dynamic_template_data: {
+      appLink: link,
+      applicantName: sender.name,
+      interviewerName: interviewer.name
+    }
+  };
+  await sgMail.send(msg);
+  ctx.body = 'successfully submitted';
+};
 
 // CREATE APPLICATION FROM COMPANY DASHBOARD
 exports.createApplication = async ctx => {
@@ -111,7 +141,7 @@ exports.createApplication = async ctx => {
       appLink: link,
       senderName: sender.name,
       companyName: updatedCompany.name
-    }, 
+    }
   };
   await sgMail.send(msg);
   // FINISH
