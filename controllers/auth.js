@@ -64,7 +64,7 @@ exports.register = async ctx => {
     { new: true }
   );
   // GENERATE TOKEN
-  const link = `http://localhost:3000/landing/confirm/${createdUser.id}`;
+  const link = `http://localhost:3000/confirm/${createdUser.id}`;
   // SEND EMAIL
   const msg = {
     to: createdUser.email,
