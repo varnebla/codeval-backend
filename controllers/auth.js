@@ -64,7 +64,7 @@ exports.register = async ctx => {
     { new: true }
   );
   // GENERATE TOKEN
-  const link = `http://localhost:3000/landing/confirm/${createdUser.id}`;
+  const link = `http://localhost:3000/confirm/${createdUser.id}`;
   // SEND EMAIL
   const msg = {
     to: createdUser.email,
@@ -77,7 +77,7 @@ exports.register = async ctx => {
   };
   await sgMail.send(msg);
   // COMPOSE RESPONSE
-  ctx.body = {msg:'Succesfully registered'};
+  ctx.body = { msg: 'Succesfully registered' };
 };
 
 exports.login = async ctx => {
@@ -149,6 +149,5 @@ exports.confirmEmail = async ctx => {
   // UPDATE COMPANY
   company.verified = true;
   await company.save();
-  
-  ctx.body = {msg:'Email successfully confirmed'};
+  ctx.body = { msg: 'Email succesfully confirmed' };
 };
