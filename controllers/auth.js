@@ -128,7 +128,8 @@ exports.confirmEmail = async ctx => {
   // CHECK INPUT
   if (!userId) ctx.throw(422, JSON.stringify({ error: 'UserId required.' }));
   // CHECK IF USER EXISTS
-  const user = await User.findOne({ _id: userId });
+  
+  const user = await User.findById( userId);
   if (!user)
     ctx.throw(422, JSON.stringify({ error: 'This user doesnt exist' }));
   // CHECK IF USER EXISTS
