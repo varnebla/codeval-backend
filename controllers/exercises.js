@@ -13,7 +13,7 @@ exports.getExercises = async ctx => {
 };
 
 exports.getExercise = async ctx => {
-  ctx.body = await Application.findOne({ _id: ctx.params.id });
+  ctx.body = await Exercise.findOne({ _id: ctx.params.id });
   if (!ctx.params.id) ctx.throw(422, JSON.stringify({ error: 'Exercise id is required' }));
 };
 
@@ -80,11 +80,11 @@ exports.updateExercise = async ctx => {
     hints,
     solution
   } = ctx.request.body;
-  const exercise = await Exercise.findOne({ _id: exerciseId })
+  const exercise = await Exercise.findOne({ _id: exerciseId });
   const updatedExercise = Object.assign(exercise, ctx.request.body);
-  const result = await updatedExercise.save()
-  ctx.body = result
-}
+  const result = await updatedExercise.save();
+  ctx.body = result;
+};
 
 exports.deleteExercise = async ctx => {
   const { companyId } = ctx.request.jwtPayload;
