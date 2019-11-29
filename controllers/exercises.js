@@ -25,6 +25,7 @@ exports.createExercise = async ctx => {
     title,
     difficulty,
     placeholderCode,
+    examples,
     tests,
     instructions,
     hints,
