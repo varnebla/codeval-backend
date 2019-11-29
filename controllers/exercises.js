@@ -12,6 +12,12 @@ exports.getExercises = async ctx => {
   ctx.body = result.exercises;
 };
 
+exports.getExercise = async ctx => {
+  ctx.body = await Application.findOne({ _id: ctx.params.id });
+  if (!ctx.params.id) ctx.throw(422, JSON.stringify({ error: 'Exercise id is required' }));
+};
+
+
 exports.createExercise = async ctx => {
   const { id, companyId } = ctx.request.jwtPayload;
   // CHECK INPUT
@@ -40,6 +46,7 @@ exports.createExercise = async ctx => {
     title,
     instructions,
     duration,
+    examples,
     difficulty,
     placeholderCode,
     tests,
@@ -58,6 +65,25 @@ exports.createExercise = async ctx => {
   ctx.body = 'Exercise created';
   ctx.status = 201;
 };
+
+exports.updateExercise = async ctx => {
+  const exerciseId = ctx.params.id;
+  const {
+    title,
+    difficulty,
+    duration,
+    examples,
+    placeholderCode,
+    tests,
+    instructions,
+    hints,
+    solution
+  } = ctx.request.body;
+  const exercise = await Exercise.findOne({ _id: exerciseId })
+  const updatedExercise = Object.assign(exercise, ctx.request.body);
+  const result = await updatedExercise.save()
+  ctx.body = result
+}
 
 exports.deleteExercise = async ctx => {
   const { companyId } = ctx.request.jwtPayload;

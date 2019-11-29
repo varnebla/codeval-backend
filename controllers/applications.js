@@ -149,3 +149,4 @@ exports.createApplication = async ctx => {
   // FINISH
   ctx.body = 'Application succesfully created';
 };
+
