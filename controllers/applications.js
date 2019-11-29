@@ -57,7 +57,7 @@ exports.startApplication = async ctx => {
     { $set: { applicantName: applicantName, status: 'activated', startingTime: startingTime } },
     { new: true }
   );
-  ctx.body = 'successfully started';
+  ctx.body = JSON.stringify({message: 'successfully started'});
 };
 
 // SUBMIT APPLICATION
@@ -74,8 +74,6 @@ exports.submitApplication = async ctx => {
     { $set: { completionTime, status: 'completed', submittedCode, passed } },
     { new: true }
   );
-  // GET THE SENDER
-  const sender = await User.findOne({ _id: id });
   // FIND THE CREATOR OF THE APPLICATION
   const interviewer = await User.findOne({ _id: updatedApplication.created_by });
   // SEND EMAIL TO APPLICANT
@@ -86,12 +84,12 @@ exports.submitApplication = async ctx => {
     templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
     dynamic_template_data: {
       appLink: link,
-      applicantName: sender.name,
+      applicantName: updatedApplication.applicantName,
       interviewerName: interviewer.name
     }
   };
   await sgMail.send(msg);
-  ctx.body = 'successfully submitted';
+  ctx.body = JSON.stringify({message: 'successfully submitted'});
 };
 
 // CREATE APPLICATION FROM COMPANY DASHBOARD
