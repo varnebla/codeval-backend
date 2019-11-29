@@ -18,6 +18,7 @@ exports.getApplications = async ctx => {
     model: Application,
     populate: { path: 'created_by', model: User, select: ['name', 'email'] }
   });
+  // CHECK IF ACTIVATED, AND IF SO IF THE TIME - STARTING TIME > EXERCISE TIME -> status: abandoned
   ctx.body = result.applications;
 };
 

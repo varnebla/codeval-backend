@@ -7,7 +7,7 @@ exports.getExercises = async ctx => {
   const result = await Company.findOne({ _id: companyId }).populate({
     path: 'exercises',
     model: Exercise,
-    populate: { path: 'created_by', model: User, select: ['name', 'email'] }
+    populate: [{ path: 'created_by', model: User, select: ['name', 'email'] }, { path: 'updated_by', model: User, select: ['name', 'email'] }],
   });
   ctx.body = result.exercises;
 };
@@ -68,6 +68,7 @@ exports.createExercise = async ctx => {
 };
 
 exports.updateExercise = async ctx => {
+  const { id,  } = ctx.request.jwtPayload;
   const exerciseId = ctx.params.id;
   const {
     title,
@@ -82,9 +83,12 @@ exports.updateExercise = async ctx => {
   } = ctx.request.body;
   const exercise = await Exercise.findOne({ _id: exerciseId });
   const updatedExercise = Object.assign(exercise, ctx.request.body);
-  const result = await updatedExercise.save();
-  ctx.body = result;
-};
+  updatedExercise.updated_by = id;
+  updatedExercise.updated_at = new Date().toISOString()
+  const result = await updatedExercise.save()
+  ctx.body = result
+}
+
 
 exports.deleteExercise = async ctx => {
   const { companyId } = ctx.request.jwtPayload;
