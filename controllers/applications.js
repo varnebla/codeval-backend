@@ -81,7 +81,7 @@ exports.submitApplication = async ctx => {
   const msg = {
     to: interviewer.email,
     from: 'thesis@codeworks.com',
-    templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
+    templateId: 'd-ba359bea1c444916b3ee03074f45270b',
     dynamic_template_data: {
       appLink: link,
       applicantName: updatedApplication.applicantName,
@@ -134,7 +134,7 @@ exports.createApplication = async ctx => {
     { new: true }
   );
   // SEND EMAIL TO APPLICANT
-  const link = `http://localhost:3000/assessment/briefing/${createdApplication._id}`;
+  const link = `http://localhost:3000/assessment/${createdApplication._id}`;
   const msg = {
     to: applicantEmail,
     from: 'thesis@codeworks.com',
