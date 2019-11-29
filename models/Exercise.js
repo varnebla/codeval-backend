@@ -21,6 +21,9 @@ const exerciseSchema = new Schema({
     type: String,
     required: true
   },
+  examples: {
+    type: [String]
+  },
   hints: {
     type: [String]
   },

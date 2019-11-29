@@ -21,6 +21,8 @@ router.get('/banana', authenticated, dashboard.summary);
 router.post('/createExercise', authenticated, exercises.createExercise);
 router.get('/getExercises', authenticated, exercises.getExercises);
 router.delete('/deleteExercise/:id', authenticated, exercises.deleteExercise);
+router.get('/getExercise/:id', authenticated, exercises.getExercise);
+router.post('/updateExercise/:id', authenticated, exercises.updateExercise);
 
 // APPLICATIONS ROUTES
 router.get('/getApplications', authenticated, applications.getApplications);
