@@ -27,6 +27,7 @@ router.get('/getApplications', authenticated, applications.getApplications);
 router.post('/createApplication', authenticated, applications.createApplication);
 router.get('/getApplication/:id', applications.getApplication);
 router.post('/startApplication/:id', applications.startApplication);
+router.post('/submitApplication/:id', applications.submitApplication);
 
 
 module.exports = router;

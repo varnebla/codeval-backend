@@ -62,18 +62,20 @@ exports.startApplication = async ctx => {
 
 // SUBMIT APPLICATION
 exports.submitApplication = async ctx => {
-  const { completionTime, submittedCode } = ctx.request.body;
+  const { completionTime, submittedCode, passed } = ctx.request.body;
   // CHECK INPUT
-  if (!time)
+  if (!completionTime)
     ctx.throw(422, JSON.stringify({ error: 'Applicant name is required' }));
   if (!submittedCode)
     ctx.throw(422, JSON.stringify({ error: 'Applicant name is required' }));
   // UPDATE THE APPLICATION
   const updatedApplication = await Application.findOneAndUpdate(
     { _id: ctx.params.id },
-    { $set: { completionTime, status: 'completed', submittedCode } },
+    { $set: { completionTime, status: 'completed', submittedCode, passed } },
     { new: true }
   );
+  // GET THE SENDER
+  const sender = await User.findOne({ _id: id });
   // FIND THE CREATOR OF THE APPLICATION
   const interviewer = await User.findOne({ _id: updatedApplication.created_by });
   // SEND EMAIL TO APPLICANT
