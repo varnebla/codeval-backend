@@ -6,6 +6,7 @@ const auth = require('./../controllers/auth');
 const dashboard = require('./../controllers/dashboard');
 const exercises = require('./../controllers/exercises');
 const applications = require('./../controllers/applications');
+const interviewers = require('./../controllers/interviewers');
 
 // AUTH ROUTES
 router.post('/register', auth.register);
@@ -16,6 +17,9 @@ router.post('/confirmEmail', auth.confirmEmail);
 router.get('/banana', authenticated, dashboard.summary);
 
 // INTERVIEWERS ROUTES
+router.post('/inviteInterviewer', authenticated, interviewers.inviteInteviewer);
+router.post('/registerInterviewer/:id', interviewers.registerInterviewer);
+router.get('/getInterviewers', authenticated, interviewers.getInterviewers);
 
 // EXERCISES ROUTES
 router.post('/createExercise', authenticated, exercises.createExercise);
