@@ -60,7 +60,7 @@ exports.register = async ctx => {
   // LINK THE COMPANY TO THE USER
   const updatedCompany = await Company.findOneAndUpdate(
     { _id: createdCompany.id },
-    { $set: { admin: createdUser.id } },
+    { $set: { admin: createdUser.id }, $push: {employees: createdUser.id} },
     { new: true }
   );
   // GENERATE TOKEN
