@@ -152,9 +152,26 @@ exports.getProfile = async ctx => {
   const company = await Company.findOne({ _id: companyId });
   if (!user || !company)
     ctx.throw(422, JSON.stringify({ error: 'User or Company not found.' }));
-
   return {
     user,
     company
+  };
+};
+
+exports.updateProfile = async ctx => {
+  const { id, companyId } = ctx.request.jwtPayload;
+  const { userEmail, companyEmail, name, companyName } = ctx.request.body;
+  const user = await User.findOneAndUpdate(
+    { _id: id },
+    { $set: { name: name, email: userEmail } },
+    { new: true }
+  );
+  if (companyName || companyEmail) {
+    await Company.findOneAndUpdate(
+      { _id: companyId },
+      { $set: { name: companyName, email: companyEmail } },
+      { new: true }
+    );
   }
+  return user;
 };
