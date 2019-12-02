@@ -2,6 +2,7 @@ const Application = require('./../models/Application');
 const Exercise = require('./../models/Exercise');
 const Company = require('./../models/Company');
 const User = require('./../models/User');
+const Report = require('./../models/Report');
 
 //TODO// FIX API KEY THAT IS NOT INJECTED FRON .ENV
 const sgMail = require('@sendgrid/mail');
@@ -16,7 +17,17 @@ exports.getApplications = async ctx => {
   const result = await Company.findOne({ _id: companyId }).populate({
     path: 'applications',
     model: Application,
-    populate: { path: 'created_by', model: User, select: ['name', 'email'] }
+    populate: [
+      {
+        path: 'created_by',
+        model: User,
+        select: ['name', 'email']
+      },
+      {
+        path: 'report',
+        model: Report
+      }
+    ]
   });
   // CHECK IF ACTIVATED, AND IF SO IF THE TIME - STARTING TIME > EXERCISE TIME -> status: abandoned
   ctx.body = result.applications;
@@ -55,28 +66,79 @@ exports.startApplication = async ctx => {
   // UPDATE THE APPLICATION
   await Application.findOneAndUpdate(
     { _id: ctx.params.id },
-    { $set: { applicantName: applicantName, status: 'activated', startingTime: startingTime } },
+    {
+      $set: {
+        applicantName: applicantName,
+        status: 'activated',
+        startingTime: startingTime
+      }
+    },
     { new: true }
   );
-  ctx.body = JSON.stringify({message: 'successfully started'});
+  ctx.body = JSON.stringify({ message: 'successfully started' });
 };
 
 // SUBMIT APPLICATION
 exports.submitApplication = async ctx => {
-  const { completionTime, submittedCode, passed } = ctx.request.body;
+  const {
+    completionTime,
+    submittedCode,
+    passed,
+    tests,
+    hints,
+    duration,
+    finalScore,
+    copyPaste,
+    testClicked
+  } = ctx.request.body;
   // CHECK INPUT
   if (!completionTime)
-    ctx.throw(422, JSON.stringify({ error: 'Applicant name is required' }));
+    ctx.throw(422, JSON.stringify({ error: 'Completion time is required' }));
   if (!submittedCode)
-    ctx.throw(422, JSON.stringify({ error: 'Applicant name is required' }));
+    ctx.throw(422, JSON.stringify({ error: 'Submitted code is required' }));
+  if (!tests) ctx.throw(422, JSON.stringify({ error: 'Tests are required' }));
+  if (!hints) ctx.throw(422, JSON.stringify({ error: 'Hints are required' }));
+  if (!duration)
+    ctx.throw(422, JSON.stringify({ error: 'Duration is required' }));
+  if (!finalScore)
+    ctx.throw(422, JSON.stringify({ error: 'Final score is required' }));
+  if (!copyPaste)
+    ctx.throw(422, JSON.stringify({ error: 'Copy paste is required' }));
+  if (!testClicked)
+    ctx.throw(422, JSON.stringify({ error: 'Test clicked is required' }));
+  // GET APPLICATION
+  const app = await Application.findOne({ _id: ctx.params.id });
+  // SAVE THE REPORT
+  const savedReport = await Report.create({
+    submittedCode,
+    tests,
+    hints,
+    passed,
+    duration,
+    finalScore,
+    copyPaste,
+    testClicked,
+    application: ctx.params.id,
+    applicantName: app.applicantName
+  });
   // UPDATE THE APPLICATION
   const updatedApplication = await Application.findOneAndUpdate(
     { _id: ctx.params.id },
-    { $set: { completionTime, status: 'completed', submittedCode, passed } },
+    {
+      $set: {
+        completionTime,
+        status: 'completed',
+        submittedCode,
+        passed,
+        report: savedReport.id
+      }
+    },
     { new: true }
   );
   // FIND THE CREATOR OF THE APPLICATION
-  const interviewer = await User.findOne({ _id: updatedApplication.created_by });
+  const interviewer = await User.findOne({
+    _id: updatedApplication.created_by
+  });
   // SEND EMAIL TO APPLICANT
   const link = 'http://localhost:3000/dashboard';
   const msg = {
@@ -90,7 +152,7 @@ exports.submitApplication = async ctx => {
     }
   };
   await sgMail.send(msg);
-  ctx.body = JSON.stringify({message: 'successfully submitted'});
+  ctx.body = JSON.stringify({ message: 'successfully submitted' });
 };
 
 // CREATE APPLICATION FROM COMPANY DASHBOARD
@@ -135,19 +197,18 @@ exports.createApplication = async ctx => {
     { new: true }
   );
   // SEND EMAIL TO APPLICANT
-  const link = `http://localhost:3000/assessment/${createdApplication._id}`;
-  const msg = {
-    to: applicantEmail,
-    from: 'thesis@codeworks.com',
-    templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
-    dynamic_template_data: {
-      appLink: link,
-      senderName: sender.name,
-      companyName: updatedCompany.name
-    }
-  };
-  await sgMail.send(msg);
+  // const link = `http://localhost:3000/assessment/${createdApplication._id}`;
+  // const msg = {
+  //   to: applicantEmail,
+  //   from: 'thesis@codeworks.com',
+  //   templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
+  //   dynamic_template_data: {
+  //     appLink: link,
+  //     senderName: sender.name,
+  //     companyName: updatedCompany.name
+  //   }
+  // };
+  // await sgMail.send(msg);
   // FINISH
   ctx.body = 'Application succesfully created';
 };
-

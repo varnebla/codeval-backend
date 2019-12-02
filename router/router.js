@@ -3,18 +3,15 @@ const router = new Router();
 const authenticated = require('./../middleware/authenticated');
 
 const auth = require('./../controllers/auth');
-const dashboard = require('./../controllers/dashboard');
 const exercises = require('./../controllers/exercises');
 const applications = require('./../controllers/applications');
 const interviewers = require('./../controllers/interviewers');
+const reports = require('./../controllers/reports');
 
 // AUTH ROUTES
 router.post('/register', auth.register);
 router.post('/login', auth.login);
 router.post('/confirmEmail', auth.confirmEmail);
-
-// DASHOBARD ROUTES
-router.get('/banana', authenticated, dashboard.summary);
 
 // INTERVIEWERS ROUTES
 router.post('/inviteInterviewer', authenticated, interviewers.inviteInteviewer);
@@ -34,6 +31,9 @@ router.post('/createApplication', authenticated, applications.createApplication)
 router.get('/getApplication/:id', applications.getApplication);
 router.post('/startApplication/:id', applications.startApplication);
 router.post('/submitApplication/:id', applications.submitApplication);
+
+// REPORT ROUTES
+router.post('/addReview/:id', authenticated, reports.addReview);
 
 
 module.exports = router;
