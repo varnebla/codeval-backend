@@ -224,4 +224,17 @@ exports.setReviewed = async ctx => {
     { new: true }
   );
   ctx.body = 'Application succesfully updated to reviewed';
-}
+};
+
+exports.deleteApplication = async ctx => {
+  if (!ctx.params.id) ctx.throw(422, JSON.stringify({ error: 'Application not found' })) 
+  const {companyId} = ctx.request.jwtPayload;
+  const company = await Company.findOne({_id: companyId});
+  const updatedApplications = company.applications.filter((elem) => {
+    return elem !== ctx.params.id;
+  });
+  company.applications = updatedApplications;
+  await company.save();
+  await Application.findOneAndRemove({_id : ctx.params.id});
+  ctx.body = 'succesfully deleted';
+};

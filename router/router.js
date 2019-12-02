@@ -1,4 +1,4 @@
-\const Router = require('koa-router');
+const Router = require('koa-router');
 const router = new Router();
 const authenticated = require('./../middleware/authenticated');
 
@@ -34,6 +34,7 @@ router.get('/getApplication/:id', applications.getApplication);
 router.post('/startApplication/:id', applications.startApplication);
 router.post('/submitApplication/:id', applications.submitApplication);
 router.post('/setReviewed/:id', applications.setReviewed);
+router.delete('/deleteApplication/:id', authenticated, applications.deleteApplication)
 
 // REPORT ROUTES
 router.post('/addReview/:id', authenticated, reports.addReview);
