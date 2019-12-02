@@ -201,7 +201,7 @@ exports.createApplication = async ctx => {
   const msg = {
     to: applicantEmail,
     from: 'thesis@codeworks.com',
-    templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
+    templateId: 'd-ba359bea1c444916b3ee03074f45270b',
     dynamic_template_data: {
       appLink: link,
       senderName: sender.name,

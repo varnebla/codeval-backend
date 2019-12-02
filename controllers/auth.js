@@ -60,7 +60,7 @@ exports.register = async ctx => {
   // LINK THE COMPANY TO THE USER
   const updatedCompany = await Company.findOneAndUpdate(
     { _id: createdCompany.id },
-    { $set: { admin: createdUser.id }, $push: {employees: createdUser.id} },
+    { $set: { admin: createdUser.id }, $push: { employees: createdUser.id } },
     { new: true }
   );
   // GENERATE TOKEN
@@ -73,7 +73,7 @@ exports.register = async ctx => {
     dynamic_template_data: {
       appLink: link,
       senderName: createdUser.name
-    },
+    }
   };
   await sgMail.send(msg);
   // COMPOSE RESPONSE
@@ -101,10 +101,7 @@ exports.login = async ctx => {
   }
   // CHECK IF THE USER IS VERIFIED
   if (!user.verified) {
-    ctx.throw(
-      422,
-      JSON.stringify({ error: 'This user is not verified' })
-    );
+    ctx.throw(422, JSON.stringify({ error: 'This user is not verified' }));
   }
   // CHECK IF THE PASSWORD IS CORRECT
   const match = await bcrypt.compare(password, user.password);
@@ -128,20 +125,17 @@ exports.confirmEmail = async ctx => {
   // CHECK INPUT
   if (!userId) ctx.throw(422, JSON.stringify({ error: 'UserId required.' }));
   // CHECK IF USER EXISTS
-  
-  const user = await User.findById( userId);
+
+  const user = await User.findById(userId);
   if (!user)
     ctx.throw(422, JSON.stringify({ error: 'This user doesnt exist' }));
   // CHECK IF USER EXISTS
   const company = await Company.findOne({ admin: userId });
   if (!company)
     ctx.throw(422, JSON.stringify({ error: 'This company doesnt exist' }));
-    // CHECK IF THE USER IS VERIFIED
+  // CHECK IF THE USER IS VERIFIED
   if (user.verified) {
-    ctx.throw(
-      422,
-      JSON.stringify({ error: 'This user is already verified' })
-    );
+    ctx.throw(422, JSON.stringify({ error: 'This user is already verified' }));
   }
   // UPDATE USER
   user.verified = true;
@@ -150,4 +144,17 @@ exports.confirmEmail = async ctx => {
   company.verified = true;
   await company.save();
   ctx.body = { msg: 'Email succesfully confirmed' };
+};
+
+exports.getProfile = async ctx => {
+  const { id, companyId } = ctx.request.jwtPayload;
+  const user = await User.findOne({ _id: id });
+  const company = await Company.findOne({ _id: companyId });
+  if (!user || !company)
+    ctx.throw(422, JSON.stringify({ error: 'User or Company not found.' }));
+
+  return {
+    user,
+    company
+  }
 };

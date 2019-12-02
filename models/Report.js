@@ -12,7 +12,7 @@ const reportSchema = new Schema({
     {
       title: String,
       used: Boolean,
-      time: Number
+      time: Date
     }
   ],
   passed: Boolean,
@@ -21,19 +21,13 @@ const reportSchema = new Schema({
   copyPaste: [
     {
       content: String,
-      time: Number
+      time: Date
     }
   ],
   testClicked: [
     {
       currentCode: String,
-      tests: [
-        {
-          title: String,
-          passed: Boolean
-        }
-      ],
-      time: Number
+      time: Date
     }
   ],
   applicantName: String,
