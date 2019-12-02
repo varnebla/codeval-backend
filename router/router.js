@@ -1,4 +1,4 @@
-const Router = require('koa-router');
+\const Router = require('koa-router');
 const router = new Router();
 const authenticated = require('./../middleware/authenticated');
 
@@ -12,6 +12,8 @@ const reports = require('./../controllers/reports');
 router.post('/register', auth.register);
 router.post('/login', auth.login);
 router.post('/confirmEmail', auth.confirmEmail);
+router.get('/getProfile', authenticated, auth.getProfile);
+router.post('/updateProfile', authenticated, auth.updateProfile)
 
 // INTERVIEWERS ROUTES
 router.post('/inviteInterviewer', authenticated, interviewers.inviteInteviewer);
@@ -31,6 +33,7 @@ router.post('/createApplication', authenticated, applications.createApplication)
 router.get('/getApplication/:id', applications.getApplication);
 router.post('/startApplication/:id', applications.startApplication);
 router.post('/submitApplication/:id', applications.submitApplication);
+router.post('/setReviewed/:id', applications.setReviewed);
 
 // REPORT ROUTES
 router.post('/addReview/:id', authenticated, reports.addReview);

@@ -69,7 +69,7 @@ exports.inviteInteviewer = async ctx => {
   };
   await sgMail.send(msg);
   // RETURN SOMETHING
-  ctx.body = JSON.stringify({ message: 'successfully invited' });
+  ctx.body = JSON.stringify({ message: 'successfully invited' }); 
 };
 
 exports.registerInterviewer = async ctx => {

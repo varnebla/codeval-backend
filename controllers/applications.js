@@ -212,3 +212,16 @@ exports.createApplication = async ctx => {
   // FINISH
   ctx.body = 'Application succesfully created';
 };
+
+exports.setReviewed = async ctx => {
+  await Application.findOneAndUpdate(
+    { _id: ctx.params.id },
+    {
+      $set: {
+        status: 'reviewed'
+      }
+    },
+    { new: true }
+  );
+  ctx.body = 'Application succesfully updated to reviewed';
+}
