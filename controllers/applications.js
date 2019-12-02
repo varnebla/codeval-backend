@@ -197,18 +197,18 @@ exports.createApplication = async ctx => {
     { new: true }
   );
   // SEND EMAIL TO APPLICANT
-  // const link = `http://localhost:3000/assessment/${createdApplication._id}`;
-  // const msg = {
-  //   to: applicantEmail,
-  //   from: 'thesis@codeworks.com',
-  //   templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
-  //   dynamic_template_data: {
-  //     appLink: link,
-  //     senderName: sender.name,
-  //     companyName: updatedCompany.name
-  //   }
-  // };
-  // await sgMail.send(msg);
+  const link = `http://localhost:3000/assessment/${createdApplication._id}`;
+  const msg = {
+    to: applicantEmail,
+    from: 'thesis@codeworks.com',
+    templateId: 'd-e7fe8fec932843d7a30f26dc23c6bfff',
+    dynamic_template_data: {
+      appLink: link,
+      senderName: sender.name,
+      companyName: updatedCompany.name
+    }
+  };
+  await sgMail.send(msg);
   // FINISH
   ctx.body = 'Application succesfully created';
 };
