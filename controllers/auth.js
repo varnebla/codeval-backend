@@ -53,6 +53,7 @@ exports.register = async ctx => {
   const createdUser = await User.create({
     name,
     email,
+    isAdmin: true,
     password: hashedPassword,
     created_at: new Date().toISOString(),
     company: createdCompany.id
@@ -152,7 +153,7 @@ exports.getProfile = async ctx => {
   const company = await Company.findOne({ _id: companyId });
   if (!user || !company)
     ctx.throw(422, JSON.stringify({ error: 'User or Company not found.' }));
-  return {
+  ctx = {
     user,
     company
   };
@@ -173,5 +174,5 @@ exports.updateProfile = async ctx => {
       { new: true }
     );
   }
-  return user;
+  ctx.body = user;
 };
