@@ -90,8 +90,9 @@ exports.registerInterviewer = async ctx => {
   // COMPOSE RESPONSE
   ctx.body = {
     name: updatedInterviewer.name,
+    email: updatedInterviewer.email,
     companyId: updatedInterviewer.company,
     id: updatedInterviewer._id,
-    token
+    token:token
   };
 };
