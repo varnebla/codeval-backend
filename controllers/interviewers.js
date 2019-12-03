@@ -56,7 +56,7 @@ exports.inviteInteviewer = async ctx => {
     { new: true }
   );
   // SEND EMAIL TO USER
-  const link = `http://localhost:3000/inviteInterviewer/${createdInterviewer._id}`;
+  const link = `http://localhost:3000/interviewer/${createdInterviewer._id}`;
   const msg = {
     to: createdInterviewer.email,
     from: 'thesis@codeworks.com',
@@ -90,8 +90,9 @@ exports.registerInterviewer = async ctx => {
   // COMPOSE RESPONSE
   ctx.body = {
     name: updatedInterviewer.name,
+    email: updatedInterviewer.email,
     companyId: updatedInterviewer.company,
     id: updatedInterviewer._id,
-    token
+    token:token
   };
 };
