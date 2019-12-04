@@ -153,7 +153,7 @@ exports.getProfile = async ctx => {
   const company = await Company.findOne({ _id: companyId });
   if (!user || !company)
     ctx.throw(422, JSON.stringify({ error: 'User or Company not found.' }));
-  ctx = {
+  ctx.body = {
     user,
     company
   };
