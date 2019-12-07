@@ -29,7 +29,7 @@ git clone https://github.com/varnebla/thesis-backend
 npm install
 ```
 
-3. Start the front-end application
+3. Start the back-end application
 ```
 npm run dev
 ```
