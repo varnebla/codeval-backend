@@ -9,7 +9,7 @@ Codeval is a first level tech interview platform, which provides complete flow f
 ## Screenshots
 
 <p align="center">
-  <img src="codeval-mockup.png" />
+  <img src="images/codeval-mockup.png" />
 </p>
 
 
